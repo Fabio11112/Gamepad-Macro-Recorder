@@ -13,3 +13,7 @@ class JsonRecorder:
     def append(self, input: Input):
         self.record.append(input.to_dict())
         print(self.record)
+
+    def save(self):
+        with open(self.filename, "w") as f:
+            json.dump(self.record, f, indent=4)

@@ -7,7 +7,9 @@ import time
 
 DEAD_ZONE = 0.1
 DUALSENSE_SCHEME = "controller_schemes/dualsense.json"
-DUALSENSE_INPUT_RECORD = "dualsense_inputs.json"
+INPUT_FOLDER = "recordings"
+
+DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
 DOWN = 0
 UP = 1
@@ -19,6 +21,7 @@ class GamepadReader:
         self.scheme = None
         self.isRecording = False
         self.start_time = None
+        self.json_recorder = self.json_recorder = JsonRecorder(DUALSENSE_INPUT_RECORD)
 
         with open(DUALSENSE_SCHEME) as f:
             self.scheme = json.load(f)
@@ -47,9 +50,12 @@ class GamepadReader:
         self._read_input()
 
 
+    def stop(self):
+        self.isRecording = False
+        self.json_recorder.save()
+
     def _read_input(self):
 
-        json_recorder = JsonRecorder(DUALSENSE_INPUT_RECORD)
         self.start_time = time.time()
 
         while self.isRecording: 
@@ -61,19 +67,21 @@ class GamepadReader:
 
                 if event.type == self.pg.JOYBUTTONDOWN:
                     input = Input(event.button, Type.BUTTON, DOWN, self.start_time)
-                    json_recorder.append(input)
+                    self.json_recorder.append(input)
                     #print(f"Button with id {event.button} down.")
                 if event.type == self.pg.JOYBUTTONUP:
                     input = Input(event.button, Type.BUTTON, UP, self.start_time)
-                    json_recorder.append(input)
+                    self.json_recorder.append(input)
                    #print(f"Button with id {event.button} up.")
                 
                 if event.type == self.pg.JOYAXISMOTION and (abs(event.value) >= DEAD_ZONE):
                     input = Input(event.axis, Type.AXIS, event.value, self.start_time)
-                    json_recorder.append(input)
+                    self.json_recorder.append(input)
                     #print(f"Axis with id {event.axis} with value {event.value}.")
 
         print(f"is recording? {self.isRecording}")
+    
+    
 
 
 
