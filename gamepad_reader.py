@@ -1,15 +1,26 @@
+from json_recorder import JsonRecorder
+from input import Input
+from input_type import Type
 import json
+import time
+
+
 DEAD_ZONE = 0.1
+DUALSENSE_SCHEME = "controller_schemes/dualsense.json"
+DUALSENSE_INPUT_RECORD = "dualsense_inputs.json"
+
+DOWN = 0
+UP = 1
 
 class GamepadReader:
-    def __init__(self, pg):
-        record = []
+    def __init__(self, pg: object):
         self.pg = pg
         self.joystick = None
         self.scheme = None
-        isRecording = False
+        self.isRecording = False
+        self.start_time = None
 
-        with open("controller_schemes/dualsense.json") as f:
+        with open(DUALSENSE_SCHEME) as f:
             self.scheme = json.load(f)
 
         pg.joystick.init()
@@ -33,25 +44,36 @@ class GamepadReader:
 
     def record(self):
         self.isRecording = True
-        self.read_input()
+        self._read_input()
 
 
-    def read_input(self):
+    def _read_input(self):
+
+        json_recorder = JsonRecorder(DUALSENSE_INPUT_RECORD)
+        self.start_time = time.time()
+
         while self.isRecording: 
+            input = None
             for event in self.pg.event.get():
                 if event.type == self.pg.QUIT:
-                    done = True
-
-                #print(self.joystick.get_axis(0))
+                    print("Quitting.")
+                    self.isRecording = False
 
                 if event.type == self.pg.JOYBUTTONDOWN:
-                    print(f"Button with id {event.button} down")
-
+                    input = Input(event.button, Type.BUTTON, DOWN, self.start_time)
+                    json_recorder.append(input)
+                    #print(f"Button with id {event.button} down.")
                 if event.type == self.pg.JOYBUTTONUP:
-                    print(f"Button with id {event.button} up")
+                    input = Input(event.button, Type.BUTTON, UP, self.start_time)
+                    json_recorder.append(input)
+                   #print(f"Button with id {event.button} up.")
                 
                 if event.type == self.pg.JOYAXISMOTION and (abs(event.value) >= DEAD_ZONE):
-                    print(f"Axis with id {event.axis} with value {event.value}")
+                    input = Input(event.axis, Type.AXIS, event.value, self.start_time)
+                    json_recorder.append(input)
+                    #print(f"Axis with id {event.axis} with value {event.value}.")
+
+        print(f"is recording? {self.isRecording}")
 
 
 
