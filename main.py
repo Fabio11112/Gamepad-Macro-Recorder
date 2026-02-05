@@ -1,9 +1,9 @@
 import pygame as pg
 import vgamepad as vg
-from gamepad_reader import *
-from gamepad_repeater import *
-from input_collection import *
-from json_loader import JsonLoader
+from gamepad.gamepad_reader import *
+from gamepad.gamepad_repeater import *
+from input.input_collection import *
+from json.json_loader import JsonLoader
 
 INPUT_FOLDER = "recordings"
 DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
@@ -21,9 +21,6 @@ def main():
 
         while iterator.hasNext():
             print(iterator.next())
-
-
-
 
     else:
         if SAVE:

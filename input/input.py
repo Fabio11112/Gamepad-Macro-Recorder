@@ -1,4 +1,4 @@
-from input_type import Type
+from input.input_type import Type
 import time
 
 class Input():
