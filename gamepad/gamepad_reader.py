@@ -1,4 +1,4 @@
-from json.json_recorder import JsonRecorder
+from json_classes.json_recorder import JsonRecorder
 from input.input import Input
 from input.input_type import Type
 import json
