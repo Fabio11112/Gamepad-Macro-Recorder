@@ -1,7 +1,7 @@
 from input_type import Type
 import time
 
-class Input:
+class Input():
     def __init__(self, id: int, type: Type, value: float, start_time):
         self.id = id
         self.type = type
@@ -10,6 +10,12 @@ class Input:
 
         if value == Type.BUTTON:
             value = int(value)
+
+    def __init__(self, json: object):
+        self.id = json["id"]
+        self.type = Type(json["type"])
+        self.value = json["value"]
+        self.timestamp = json["timestamp"]
 
     def to_dict(self) -> dict:
         return {

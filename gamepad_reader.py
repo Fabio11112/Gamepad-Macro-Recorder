@@ -14,8 +14,16 @@ DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 DOWN = 0
 UP = 1
 
+
 class GamepadReader:
+    """_summary_Reads and records gamepad input events
+    """
     def __init__(self, pg: object):
+        """Constructor of the GamepadReader class.
+
+        Args:
+            pg (object): Pygame instance for handling gamepad events.
+        """
         self.pg = pg
         self.joystick = None
         self.scheme = None
@@ -46,11 +54,27 @@ class GamepadReader:
 
 
     def record(self):
+        """Starts the "recording" of the button inputs and axises movements
+
+        Raises:
+            RuntimeError: When is started another recording when there's one already happening
+        """
+        if self.isRecording:
+            raise RuntimeError("Cannot start recording: another recording has been already started")
+
         self.isRecording = True
         self._read_input()
 
 
     def stop(self):
+        """Stops the "recording" that has been previously started
+
+        Raises:
+            RuntimeError: When there is no recording to stop
+        """
+        if not self.isRecording:
+            raise RuntimeError("Cannot stop recording: no recording in progress") 
+
         self.isRecording = False
         self.json_recorder.save()
 
@@ -68,16 +92,14 @@ class GamepadReader:
                 if event.type == self.pg.JOYBUTTONDOWN:
                     input = Input(event.button, Type.BUTTON, DOWN, self.start_time)
                     self.json_recorder.append(input)
-                    #print(f"Button with id {event.button} down.")
+                    
                 if event.type == self.pg.JOYBUTTONUP:
                     input = Input(event.button, Type.BUTTON, UP, self.start_time)
                     self.json_recorder.append(input)
-                   #print(f"Button with id {event.button} up.")
                 
                 if event.type == self.pg.JOYAXISMOTION and (abs(event.value) >= DEAD_ZONE):
                     input = Input(event.axis, Type.AXIS, event.value, self.start_time)
                     self.json_recorder.append(input)
-                    #print(f"Axis with id {event.axis} with value {event.value}.")
 
         print(f"is recording? {self.isRecording}")
     
