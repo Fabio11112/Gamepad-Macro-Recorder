@@ -3,12 +3,18 @@ import vgamepad as vg
 from input_classes.input import Input
 from input_classes.input_type import Type
 
+DEAD_ZONE = 0.06
 DUALSENSE_SCHEME = "controller_schemes/dualsense.json"
 DUALSENSE = "dualsense"
 
 class GamepadToVGamepadMapper:
     def __init__(self, vg, gamepad_name=DUALSENSE):
         self.scheme = None
+
+        self.last_left_stick_y = 0
+        self.last_left_stick_x = 0
+        self.last_right_stick_y = 0
+        self.last_right_stick_x = 0
 
         if gamepad_name == DUALSENSE:
             with open(DUALSENSE_SCHEME, "r") as f:
@@ -21,6 +27,17 @@ class GamepadToVGamepadMapper:
 
 
     def map_input(self, input: Input):
+        """It maps the correct input from a gamepad from the pygame library to the
+        XINPUT X360 controller from the vgamepad library
+
+        Args:
+            input (Input): An input object that refers to the input from a recording
+
+        Returns:
+            object, (int, int): A button enum from vgamepad if it is a button, a tuple (x, y)
+            if the input was an axis from a joystick, or just x in the input was a axis from 
+            a trigger
+        """
         if input.type == Type.BUTTON:
             return self._map_button(input)
         elif input.type == Type.AXIS:
@@ -30,7 +47,32 @@ class GamepadToVGamepadMapper:
         if input.type != Type.AXIS:
             raise ValueError("Input must be a AXIS")
         
-        raise NotImplementedError
+        if input.id == self.scheme["axis"]["left_stick"]["left_right"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
+            self.last_left_stick_x = input.value
+            return (input.value, self.last_left_stick_y)
+        
+        elif input.id == self.scheme["axis"]["left_stick"]["up_down"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
+            y_value = -input.value
+            self.last_left_stick_y = y_value
+            return (self.last_left_stick_x, y_value)
+        
+        elif input.id == self.scheme["axis"]["right_stick"]["left_right"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
+            self.last_right_stick_x = input.value
+            return (input.value, self.last_right_stick_y)
+        
+        elif input.id == self.scheme["axis"]["right_stick"]["up_down"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
+            y_value = -input.value
+            self.last_right_stick_y = y_value
+            return (self.last_right_stick_x, y_value)
+        
+        elif input.id in self.scheme["axis"]["triggers"].values():
+            value = (input.value + 1) / 2   #[-1, 1] -> [0, 1]
+            return value
+        
         
     def _map_button(self, input: Input):
         if input.type != Type.BUTTON:
@@ -59,3 +101,4 @@ class GamepadToVGamepadMapper:
                 buttons_gamepad["dpad_right"]: self.vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT,
                 buttons_gamepad["touchpad"]: self.vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK
             }
+

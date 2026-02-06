@@ -1,14 +1,13 @@
 from json_classes.json_recorder import JsonRecorder
 from input_classes.input import Input
 from input_classes.input_type import Type
-import json
+from gamepad.gamepad_super import GamepadSuper
 import time
 
 
-DEAD_ZONE = 0.1
-DUALSENSE_SCHEME = "controller_schemes/dualsense.json"
+DEAD_ZONE = 0.03
 INPUT_FOLDER = "recordings"
-OFFSET = 0.01
+OFFSET = 0.008
 
 DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
@@ -16,7 +15,7 @@ DOWN = 0
 UP = 1
 
 
-class GamepadReader:
+class GamepadReader(GamepadSuper):
     """Reads and records gamepad input events
     """
     def __init__(self, pg: object):
@@ -25,15 +24,12 @@ class GamepadReader:
         Args:
             pg (object): Pygame instance for handling gamepad events.
         """
+        super().__init__()
         self.pg = pg
         self.joystick = None
-        self.scheme = None
         self.isRecording = False
         self.start_time = None
         self.json_recorder = self.json_recorder = JsonRecorder(DUALSENSE_INPUT_RECORD)
-
-        with open(DUALSENSE_SCHEME) as f:
-            self.scheme = json.load(f)
 
         self.last_left_stick_timestamp = 0
         self.last_right_stick_timestamp = 0
@@ -125,10 +121,8 @@ class GamepadReader:
                                 self.last_left_trigger_timestamp = input.timestamp
                                 break
                             case "right_trigger":
-                                self.last_right_trigge_timestampr = input.timestamp
+                                self.last_right_trigger_timestampr = input.timestamp
                                 break          
-                    else:
-                        print ("IN OFFSET")         
 
 
         print(f"is recording? {self.isRecording}")
@@ -170,21 +164,6 @@ class GamepadReader:
             #print(f"[DEBUG] Delta value of right trigger is {delta}")
         
         return offset >= delta
-
-
-    def _is_left_stick(self, input):
-        
-        return input.id in self.scheme["axis"]["left_stick"].values()
-
-    def _is_right_stick(self, input):
-        return input.id in self.scheme["axis"]["right_stick"].values()
-
-    def _is_left_trigger(self, input):
-        return input.id == self.scheme["axis"]["triggers"]["left"]
-
-    def _is_right_trigger(self, input):
-        return input.id == self.scheme["axis"]["triggers"]["right"]
-    
     
 
     def _get_axis_name(self, input):
