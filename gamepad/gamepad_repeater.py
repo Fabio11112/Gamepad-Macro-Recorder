@@ -2,6 +2,7 @@ from json_classes.json_loader import JsonLoader
 from input_classes.input_collection import InputCollection
 from input_classes.input import Input
 from gamepad.gamepad_to_vg_mapper import GamepadToVGamepadMapper
+from gamepad.gamepad_super import GamepadSuper
 from input_classes.input_type import Type
 import time
 
@@ -10,8 +11,9 @@ BUTTON_UP = 1
 
 DUALSENSE = "dualsense"
 
-class GamepadRepeater:
+class GamepadRepeater(GamepadSuper):
     def __init__(self, vg: object, inputs_file: str, gamepad_name = DUALSENSE):
+        super().__init__()
         self.gamepad = vg.VX360Gamepad()
 
         self.mapper = GamepadToVGamepadMapper(vg, gamepad_name)
@@ -42,6 +44,8 @@ class GamepadRepeater:
         elif input.type == Type.AXIS:
             self._execute_axis(input)
 
+        self.gamepad.update()
+
     def _execute_button(self, input: Input):
         if input.value == BUTTON_DOWN:
             self.gamepad.press_button(self.mapper.map_input(input))
@@ -50,7 +54,19 @@ class GamepadRepeater:
             self.gamepad.release_button(self.mapper.map_input(input))
             print(f"Button {input.id} released")
         
-        self.gamepad.update()
+
 
     def _execute_axis(self, input: Input):
-        raise NotImplementedError
+        value = self.mapper.map_input(input)
+
+        if self._is_left_stick(input):
+            x, y = value
+            self.gamepad.left_joystick_float(x_value_float=x, y_value_float=y)
+        elif self._is_right_stick(input):
+            x, y = value
+            self.gamepad.right_joystick_float(x_value_float=x,y_value_float=y)
+        elif self._is_left_trigger(input):
+            self.gamepad.left_trigger_float(value)
+        elif self._is_right_trigger(input):
+            self.gamepad.right_trigger_float(value)
+
