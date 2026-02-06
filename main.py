@@ -10,13 +10,14 @@ DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
 RECORD = 0
 REPEAT = 1
+REPEAT_INDEFINITELY = 2
 
 DEBUG = False
 SAVE = True
 
 def main():
 
-        option = int(input("RECORD(0) or REPEAT(1)?"))
+        option = int(input("RECORD(0) or REPEAT ONCE(1) or REPEAT INDEFINITELY(2)?\n"))
 
         if option == RECORD:
             pg.init()
@@ -29,6 +30,17 @@ def main():
             repeater = GamepadRepeater(vg, DUALSENSE_INPUT_RECORD)
             input("ENTER to start")
             repeater.replay()
+
+        elif option == REPEAT_INDEFINITELY:
+            repeater = GamepadRepeater(vg, DUALSENSE_INPUT_RECORD)
+            input("ENTER to start")
+
+            while True:
+                print("[DEBUG] START REPLAY")
+                repeater.replay()
+                print("[DEBUG] END OF REPLAY AND WAITING")
+                time.sleep(5)
+                print("[DEBUG] END OF WAITING")
 
         else:
             raise ValueError("Not a valid option.")
