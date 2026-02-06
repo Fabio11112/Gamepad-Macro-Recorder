@@ -8,12 +8,12 @@
         },
         "right_stick":
          {
-            "left_right": 3,
-            "up_down": 4
+            "left_right": 2,
+            "up_down": 3
          },
          "triggers":
          {
-            "left": 2,
+            "left": 4,
             "right": 5
          }
     },

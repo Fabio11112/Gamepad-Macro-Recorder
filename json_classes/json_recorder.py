@@ -1,6 +1,6 @@
 import json
-from input_type import Type
-from input import Input
+from input_classes.input_type import Type
+from input_classes.input import Input
 
 class JsonRecorder:
 
@@ -8,7 +8,6 @@ class JsonRecorder:
         self.record = []
         self.filename = filename
         self.json = None
-
 
     def append(self, input: Input):
         self.record.append(input.to_dict())
