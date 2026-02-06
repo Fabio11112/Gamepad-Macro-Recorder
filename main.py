@@ -2,7 +2,7 @@ import pygame as pg
 import vgamepad as vg
 from gamepad.gamepad_reader import *
 from gamepad.gamepad_repeater import *
-from input.input_collection import *
+from input_classes.input_collection import *
 from json_classes.json_loader import JsonLoader
 
 INPUT_FOLDER = "recordings"

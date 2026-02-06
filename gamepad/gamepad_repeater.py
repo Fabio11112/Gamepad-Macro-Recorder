@@ -1,7 +1,7 @@
 from json_classes.json_loader import JsonLoader
-from input.input_collection import InputCollection
+from input_classes.input_collection import InputCollection
 import time
-from input.input import Input
+from input_classes.input import Input
 
 class GamepadRepeater:
     def __init__(self, vg: object, inputs_file: str):

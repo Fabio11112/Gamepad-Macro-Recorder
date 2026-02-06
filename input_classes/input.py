@@ -1,6 +1,4 @@
-from input.input_type import Type
-import time
-from typing import overload
+from input_classes.input_type import Type
 
 class Input():
     def __init__(self, *args, **kwargs):

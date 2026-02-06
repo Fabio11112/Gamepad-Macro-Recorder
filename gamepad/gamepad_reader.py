@@ -1,6 +1,6 @@
 from json_classes.json_recorder import JsonRecorder
-from input.input import Input
-from input.input_type import Type
+from input_classes.input import Input
+from input_classes.input_type import Type
 import json
 import time
 
