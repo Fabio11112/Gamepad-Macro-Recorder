@@ -8,8 +8,8 @@ from json_classes.json_loader import JsonLoader
 INPUT_FOLDER = "recordings"
 DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
-DEBUG = True
-SAVE = False
+DEBUG = False
+SAVE = True
 
 def main():
 

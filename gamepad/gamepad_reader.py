@@ -8,6 +8,7 @@ import time
 DEAD_ZONE = 0.1
 DUALSENSE_SCHEME = "controller_schemes/dualsense.json"
 INPUT_FOLDER = "recordings"
+OFFSET = 0.01
 
 DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
@@ -16,7 +17,7 @@ UP = 1
 
 
 class GamepadReader:
-    """_summary_Reads and records gamepad input events
+    """Reads and records gamepad input events
     """
     def __init__(self, pg: object):
         """Constructor of the GamepadReader class.
@@ -30,6 +31,12 @@ class GamepadReader:
         self.isRecording = False
         self.start_time = None
         self.json_recorder = self.json_recorder = JsonRecorder(DUALSENSE_INPUT_RECORD)
+
+
+        self.last_left_stick = None
+        self.last_right_stick = None
+        self.last_left_trigger = None
+        self.last_right_trigger = None
 
         with open(DUALSENSE_SCHEME) as f:
             self.scheme = json.load(f)
@@ -80,7 +87,7 @@ class GamepadReader:
 
     def _read_input(self):
 
-        self.start_time = time.time()
+        self.start_time = time.perf_counter()
 
         while self.isRecording: 
             input = None
@@ -98,12 +105,104 @@ class GamepadReader:
                     self.json_recorder.append(input)
                 
                 if event.type == self.pg.JOYAXISMOTION and (abs(event.value) >= DEAD_ZONE):
-                    input = Input(event.axis, Type.AXIS, event.value, self.start_time)
-                    self.json_recorder.append(input)
+                    timestamp = time.perf_counter() - self.start_time
+                    input = Input(event.axis, Type.AXIS, event.value, timestamp)
+                    axis_name = self._get_axis_name(input)
+
+                    if not self._is_axis_in_offset(input, axis_name, OFFSET):
+                        print(f"[DEBUG] Axis name {axis_name}")
+                        self.json_recorder.append(input)
+
+                        match axis_name:
+                            case "left_stick":
+                                self.last_left_stick = input
+                                break
+                            case "right_stick":
+                                self.last_right_stick = input
+                                break                            
+                            case "left_trigger":
+                                self.last_left_trigger = input
+                                break
+                            case "right_trigger":
+                                self.last_right_trigger = input
+                                break          
+                    else:
+                        print ("IN OFFSET")         
+
 
         print(f"is recording? {self.isRecording}")
     
     
+    def _is_axis_in_offset(self, input: Input, axis_name: str,  offset: float)-> bool:
+        """Returns true if the next input timestamp for a certain axis is less than **offset**.
+        E.g.: If the next left_trigger value happened in less than **offset** seconds, then it returns True
+
+        Args:
+            input (Input): The input got from the gamepad
+            offset (float): The value the delta of the timestamps is compared with
+
+        Raises:
+            ValueError: If the input is not a Type.AXIS
+
+        Returns:
+            bool: True if the delta of the inputs is less than **offset**
+        """
+
+        delta = 0
+        if input.type == Type.BUTTON:
+            raise ValueError("Input must be a AXIS Type")
+
+        if axis_name == "left_stick" and self.last_left_stick is not None:
+            delta = input.timestamp - self.last_left_stick.timestamp
+            #print(f"[DEBUG] Delta value of left stick is {delta}")
+            return offset <= delta
+        
+        if axis_name == "right_stick" and self.last_right_stick is not None:
+            delta = input.timestamp - self.last_right_stick.timestamp
+            #print(f"[DEBUG] Delta value of right stick is {delta}")
+            return offset <= delta
+        
+        if axis_name == "left_trigger" and self.last_left_trigger is not None:
+            delta = input.timestamp - self.last_left_trigger.timestamp
+            #print(f"[DEBUG] Delta value of left trigger is {delta}")
+            return offset <= delta
+        
+        if axis_name == "right_trigger" and self.last_right_trigger is not None:
+            delta = input.timestamp - self.last_right_trigger.timestamp
+            #print(f"[DEBUG] Delta value of right trigger is {delta}")
+            return offset <= delta
+        
+
+    def _is_left_stick(self, input):
+        
+        return input.id in self.scheme["axis"]["left_stick"].values()
+
+    def _is_right_stick(self, input):
+        return input.id in self.scheme["axis"]["right_stick"].values()
+
+    def _is_left_trigger(self, input):
+        return input.id == self.scheme["axis"]["triggers"]["left"]
+
+    def _is_right_trigger(self, input):
+        return input.id == self.scheme["axis"]["triggers"]["right"]
+    
+    
+
+    def _get_axis_name(self, input):
+        # print(f"[LEFT STICK ID]{self.scheme["axis"]["left_stick"]}")
+        # print(f"[RIGHT STICK ID]{self.scheme["axis"]["right_stick"]}")
+        # print(f"[LEFT TRIGGER ID]{self.scheme["axis"]["triggers"]["left"]}")
+        # print(f"[RIGHT TRIGGER ID]{self.scheme["axis"]["triggers"]["right"]}")
+
+
+        if self._is_left_stick(input):
+            return "left_stick"
+        if self._is_right_stick(input):
+            return "right_stick"
+        if self._is_left_trigger(input):
+            return "left_trigger"
+        if self._is_right_trigger(input):
+            return "right_trigger"
 
 
 

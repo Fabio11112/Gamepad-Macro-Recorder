@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from input.input import Input
+from input import Input
 
 
 class InputIterator(Iterator):

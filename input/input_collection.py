@@ -1,6 +1,6 @@
 from collections.abc import Iterable
-from input.input import Input
-from input.input_iterator import *
+from input import Input
+from input_iterator import InputIterator
 
 class InputCollection(Iterable):
     def __init__(self, collection: list[Input]):
