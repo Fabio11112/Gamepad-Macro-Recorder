@@ -96,16 +96,17 @@ class GamepadReader:
                     print("Quitting.")
                     self.isRecording = False
 
+                timestamp = time.perf_counter() - self.start_time
+
                 if event.type == self.pg.JOYBUTTONDOWN:
-                    input = Input(event.button, Type.BUTTON, DOWN, self.start_time)
+                    input = Input(event.button, Type.BUTTON, DOWN, timestamp)
                     self.json_recorder.append(input)
                     
                 if event.type == self.pg.JOYBUTTONUP:
-                    input = Input(event.button, Type.BUTTON, UP, self.start_time)
+                    input = Input(event.button, Type.BUTTON, UP, timestamp)
                     self.json_recorder.append(input)
                 
-                if event.type == self.pg.JOYAXISMOTION and (abs(event.value) >= DEAD_ZONE):
-                    timestamp = time.perf_counter() - self.start_time
+                if event.type == self.pg.JOYAXISMOTION and (abs(event.value) >= DEAD_ZONE):     
                     input = Input(event.axis, Type.AXIS, event.value, timestamp)
                     axis_name = self._get_axis_name(input)
 
