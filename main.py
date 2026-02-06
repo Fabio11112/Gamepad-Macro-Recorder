@@ -8,30 +8,29 @@ from json_classes.json_loader import JsonLoader
 INPUT_FOLDER = "recordings"
 DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
+RECORD = 0
+REPEAT = 1
+
 DEBUG = False
 SAVE = True
 
 def main():
 
-    if DEBUG:
-        loader = JsonLoader(DUALSENSE_INPUT_RECORD)
-        loader.load()
-        inputs = InputCollection(loader.getInputs())
-        iterator = inputs.get_iterator()
+        option = int(input("RECORD(0) or REPEAT(1)?"))
 
-        while iterator.hasNext():
-            print(iterator.next())
-
-    else:
-        if SAVE:
+        if option == RECORD:
             pg.init()
             reader = GamepadReader(pg)
             try:
                 reader.record()
             except KeyboardInterrupt:
                 reader.stop()
+        elif option == REPEAT:
+            repeater = GamepadRepeater(vg, DUALSENSE_INPUT_RECORD)
+            repeater.replay()
+
         else:
-            repeater = GamepadRepeater(vg)
+            raise ValueError("Not a valid option.")
 
 
 if __name__ == "__main__":

@@ -23,20 +23,17 @@
         "circle": 1,
         "square": 2,
         "triangle": 3,
-        "l1": 4,
-        "r1": 5,
-        "l2": 6,
-        "r2": 7,
-        "share": 8,
-        "options": 9,
-        "ps": 10,
-        "l3": 11,
-        "r3": 12
-    },
-    "dpad_hat":
-    {
-        "down_up":"Y",
-        "left_right":"X"
+        "share": 4,
+        "ps": 5,
+        "options": 6,
+        "l3": 7,
+        "r3": 8,
+        "l1": 9,
+        "r1": 10,
+        "dpad_up": 11,
+        "dpad_down": 12,
+        "dpad_left": 13,
+        "dpad_right": 14,
+        "touchpad": 15
     }
-
 }
