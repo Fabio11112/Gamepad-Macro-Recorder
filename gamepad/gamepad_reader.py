@@ -5,9 +5,9 @@ from gamepad.gamepad_super import GamepadSuper
 import time
 
 
-DEAD_ZONE = 0.1
+DEAD_ZONE = 0.03
 INPUT_FOLDER = "recordings"
-OFFSET = 0.01
+OFFSET = 0.008
 
 DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
@@ -121,10 +121,8 @@ class GamepadReader(GamepadSuper):
                                 self.last_left_trigger_timestamp = input.timestamp
                                 break
                             case "right_trigger":
-                                self.last_right_trigge_timestampr = input.timestamp
+                                self.last_right_trigger_timestampr = input.timestamp
                                 break          
-                    else:
-                        print ("IN OFFSET")         
 
 
         print(f"is recording? {self.isRecording}")

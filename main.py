@@ -27,6 +27,7 @@ def main():
                 reader.stop()
         elif option == REPEAT:
             repeater = GamepadRepeater(vg, DUALSENSE_INPUT_RECORD)
+            input("ENTER to start")
             repeater.replay()
 
         else:

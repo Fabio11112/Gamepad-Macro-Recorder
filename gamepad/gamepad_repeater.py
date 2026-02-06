@@ -8,6 +8,7 @@ import time
 
 BUTTON_DOWN = 0
 BUTTON_UP = 1
+TIME_FOR_WAITING = 0.002
 
 DUALSENSE = "dualsense"
 
@@ -32,6 +33,10 @@ class GamepadRepeater(GamepadSuper):
             input = self.iterator.next()
             target_time = start_time + input.timestamp
             
+            time_remaining = target_time - time.perf_counter()
+            if time_remaining > TIME_FOR_WAITING: # If more that this time remaining (2ms)
+                time.sleep(max(0, time_remaining - TIME_FOR_WAITING)) # Sleep most of it
+
             while time.perf_counter() < target_time:
                 pass
 

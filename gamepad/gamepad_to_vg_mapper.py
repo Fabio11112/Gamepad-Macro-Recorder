@@ -3,6 +3,7 @@ import vgamepad as vg
 from input_classes.input import Input
 from input_classes.input_type import Type
 
+DEAD_ZONE = 0.06
 DUALSENSE_SCHEME = "controller_schemes/dualsense.json"
 DUALSENSE = "dualsense"
 
@@ -47,19 +48,23 @@ class GamepadToVGamepadMapper:
             raise ValueError("Input must be a AXIS")
         
         if input.id == self.scheme["axis"]["left_stick"]["left_right"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
             self.last_left_stick_x = input.value
             return (input.value, self.last_left_stick_y)
         
         elif input.id == self.scheme["axis"]["left_stick"]["up_down"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
             y_value = -input.value
             self.last_left_stick_y = y_value
             return (self.last_left_stick_x, y_value)
         
         elif input.id == self.scheme["axis"]["right_stick"]["left_right"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
             self.last_right_stick_x = input.value
             return (input.value, self.last_right_stick_y)
         
         elif input.id == self.scheme["axis"]["right_stick"]["up_down"]:
+            input.value = 0 if abs(input.value) <= DEAD_ZONE else input.value
             y_value = -input.value
             self.last_right_stick_y = y_value
             return (self.last_right_stick_x, y_value)
