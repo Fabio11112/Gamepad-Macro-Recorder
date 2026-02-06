@@ -20,10 +20,14 @@ class GamepadRepeater(GamepadSuper):
         self.mapper = GamepadToVGamepadMapper(vg, gamepad_name)
         loader = JsonLoader(inputs_file)
         loader.load()
-        inputs = InputCollection(loader.getInputs())
-        self.iterator = inputs.get_iterator()
+        self.inputs = InputCollection(loader.getInputs())
+
+    def _initialize(self):
+        self.iterator = self.inputs.get_iterator()
 
     def replay(self):
+        self._initialize()
+        
         if not self.iterator:
             raise SystemError("No inputs to iterate to")
         
