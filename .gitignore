@@ -62,8 +62,9 @@ coverage.xml
 .DS_Store
 Thumbs.db
 
-# Project specific (your recordings)
-*.json
-recordings/
+# Project specific (recordings content only, not folder)
+recordings/*.json
+recordings/*
+!recordings/.gitkeep
 
 
