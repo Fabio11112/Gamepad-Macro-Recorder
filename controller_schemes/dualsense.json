@@ -3,13 +3,13 @@
     {
         "left_stick":
         {
-            "left_right": 0,
-            "up_down": 1
+            "x": 0,
+            "y": 1
         },
         "right_stick":
          {
-            "left_right": 2,
-            "up_down": 3
+            "x": 2,
+            "y": 3
          },
          "triggers":
          {
@@ -19,21 +19,21 @@
     },
     "button":
     {   
-        "cross": 0,
-        "circle": 1,
-        "square": 2,
-        "triangle": 3,
-        "share": 4,
-        "ps": 5,
-        "options": 6,
-        "l3": 7,
-        "r3": 8,
-        "l1": 9,
-        "r1": 10,
+        "bottom_action": 0,
+        "right_action": 1,
+        "left_action": 2,
+        "top_action": 3,
+        "select_or_share": 4,
+        "system_home": 5,
+        "start_menu": 6,
+        "left_stick_click": 7,
+        "right_stick_click": 8,
+        "left_bumper": 9,
+        "right_bumper": 10,
         "dpad_up": 11,
         "dpad_down": 12,
         "dpad_left": 13,
         "dpad_right": 14,
-        "touchpad": 15
+        "aux_center_or_touchpad": 15 
     }
 }

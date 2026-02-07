@@ -13,8 +13,8 @@ REPEAT = 1
 REPEAT_INDEFINITELY = 2
 
 def main():
-
-        option = int(input("RECORD(0) or REPEAT ONCE(1) or REPEAT INDEFINITELY(2)?\n"))
+        menu = "What do you want to do?\n0 - Record\n1 - Repeat once your recording\n2 - Repeat Indefinitely you recording\n>>>"
+        option = int(input(menu))
         configuration = ConfigManager()
         if option == RECORD:
             pg.init()

@@ -49,6 +49,10 @@ class GamepadReader(GamepadSuper):
             raise SystemError("No joystick connected")
 
         self.joystick = self.pg.joystick.Joystick(0)
+
+        print(f"The gamepad {self.joystick.get_name()} is being recorded. Start using your controller")
+
+
         self.joystick.init()
         self.isRecording = True
         self.start_time = time.perf_counter()

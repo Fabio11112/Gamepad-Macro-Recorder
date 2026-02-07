@@ -13,7 +13,7 @@ class ConfigManager:
         },
         "gamepad":{
             "dead_zone": 0.06, #0.03
-            "name": "dualsense"
+            "name": ""
         },
         "repetition":{
             "offset": 0.008,
@@ -21,7 +21,8 @@ class ConfigManager:
         }
     }
     
-    def __init__(self, config_path: str = "config/config.json"):
+    def __init__(self, gamepad_name:str = "dualsense", config_path: str = "config/config.json"):
+        self.DEFAULT_CONFIG["gamepad"]["name"] = gamepad_name
         self.config_path = Path(config_path)
         self.config: Dict[str, Any] = {}
         self.load_config()
