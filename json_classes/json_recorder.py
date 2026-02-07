@@ -11,7 +11,6 @@ class JsonRecorder:
 
     def append(self, input: Input):
         self.record.append(input.to_dict())
-        print(f"{input.to_dict()}\n")
 
     def save(self):
         with open(self.filename, "w") as f:
