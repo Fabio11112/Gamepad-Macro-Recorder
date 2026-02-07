@@ -4,20 +4,21 @@ from input_classes.input import Input
 from gamepad.gamepad_to_vg_mapper import GamepadToVGamepadMapper
 from gamepad.gamepad_super import GamepadSuper
 from input_classes.input_type import Type
+from configuration_manager.config_manager import ConfigManager
 import time
 
 BUTTON_DOWN = 0
 BUTTON_UP = 1
-TIME_FOR_WAITING = 0.002
-
-DUALSENSE = "dualsense"
 
 class GamepadRepeater(GamepadSuper):
-    def __init__(self, vg: object, inputs_file: str, gamepad_name = DUALSENSE):
-        super().__init__()
+    def __init__(self, vg: object, config: ConfigManager):
+        super().__init__(config)
         self.gamepad = vg.VX360Gamepad()
+        #gamepad_name = self.config.get("gamepad.name")
+        self.mapper = GamepadToVGamepadMapper(vg, config)
+        
+        inputs_file = f"{self.config.get("paths.recording_folder_location")}/{self.config.get("gamepad.name")}_inputs.json"
 
-        self.mapper = GamepadToVGamepadMapper(vg, gamepad_name)
         loader = JsonLoader(inputs_file)
         loader.load()
         self.inputs = InputCollection(loader.getInputs())
@@ -38,8 +39,9 @@ class GamepadRepeater(GamepadSuper):
             target_time = start_time + input.timestamp
             
             time_remaining = target_time - time.perf_counter()
-            if time_remaining > TIME_FOR_WAITING: # If more that this time remaining (2ms)
-                time.sleep(max(0, time_remaining - TIME_FOR_WAITING)) # Sleep most of it
+            time_for_waiting = self.config.get("repetition.busy_waiting_time")
+            if time_remaining > time_for_waiting: # If more that this time remaining (2ms)
+                time.sleep(max(0, time_remaining - time_for_waiting)) # Sleep most of it
 
             while time.perf_counter() < target_time:
                 pass

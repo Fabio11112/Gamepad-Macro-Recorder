@@ -5,34 +5,31 @@ from gamepad.gamepad_repeater import *
 from input_classes.input_collection import *
 from json_classes.json_loader import JsonLoader
 
-INPUT_FOLDER = "recordings"
-DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
+#INPUT_FOLDER = "recordings"
+#DUALSENSE_INPUT_RECORD = f"{INPUT_FOLDER}/dualsense_inputs.json"
 
 RECORD = 0
 REPEAT = 1
 REPEAT_INDEFINITELY = 2
 
-DEBUG = False
-SAVE = True
-
 def main():
 
         option = int(input("RECORD(0) or REPEAT ONCE(1) or REPEAT INDEFINITELY(2)?\n"))
-
+        configuration = ConfigManager()
         if option == RECORD:
             pg.init()
-            reader = GamepadReader(pg)
+            reader = GamepadReader(pg, configuration)
             try:
                 reader.record()
             except KeyboardInterrupt:
                 reader.stop()
         elif option == REPEAT:
-            repeater = GamepadRepeater(vg, DUALSENSE_INPUT_RECORD)
+            repeater = GamepadRepeater(vg, configuration)
             input("ENTER to start")
             repeater.replay()
 
         elif option == REPEAT_INDEFINITELY:
-            repeater = GamepadRepeater(vg, DUALSENSE_INPUT_RECORD)
+            repeater = GamepadRepeater(vg, configuration)
             input("ENTER to start")
 
             while True:
