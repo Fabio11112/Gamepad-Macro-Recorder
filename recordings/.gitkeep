@@ -1,0 +1,2 @@
+# This file ensures the recordings folder is tracked by git
+# while the actual recording files are ignored

@@ -1,0 +1,14 @@
+{
+  "paths": {
+    "recording_folder_location": "recordings/",
+    "controller_scheme_folder": "controller_schemes/"
+  },
+  "gamepad": {
+    "dead_zone": 0.06,
+    "name": "dualsense"
+  },
+  "repetition": {
+    "offset": 0.008,
+    "busy_waiting_time": 0.002
+  }
+}
