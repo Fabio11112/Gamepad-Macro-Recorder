@@ -17,7 +17,7 @@ class GamepadRepeater(GamepadSuper):
         #gamepad_name = self.config.get("gamepad.name")
         self.mapper = GamepadToVGamepadMapper(vg, config)
         
-        inputs_file = f"{self.config.get("paths.recording_folder_location")}/{self.config.get("gamepad.name")}_inputs.json"
+        inputs_file = f"{self.config.get('paths.recording_folder_location')}/{self.config.get('gamepad.name')}_inputs.json"
 
         loader = JsonLoader(inputs_file)
         loader.load()

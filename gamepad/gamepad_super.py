@@ -5,7 +5,7 @@ class GamepadSuper:
     def __init__(self, config: ConfigManager):
         self.scheme = None
         self.config = config
-        file_path = f"{self.config.get("paths.controller_scheme_folder")}/{self.config.get("gamepad.name")}.json"
+        file_path = f"{self.config.get('paths.controller_scheme_folder')}/{self.config.get('gamepad.name')}.json"
         with open(file_path) as f:
             self.scheme = json.load(f)
 
