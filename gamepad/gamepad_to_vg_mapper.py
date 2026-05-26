@@ -13,7 +13,7 @@ class GamepadToVGamepadMapper:
         self.last_right_stick_y = 0
         self.last_right_stick_x = 0
         self.dead_zone = self.config.get("gamepad.dead_zone")
-        gamepad_scheme = f"{self.config.get("paths.controller_scheme_folder")}/{self.config.get("gamepad.name")}.json"
+        gamepad_scheme = f"{self.config.get('paths.controller_scheme_folder')}/{self.config.get('gamepad.name')}.json"
 
         with open(gamepad_scheme, "r") as f:
             self.scheme = json.load(f)

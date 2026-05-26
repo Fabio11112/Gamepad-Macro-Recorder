@@ -24,7 +24,7 @@ class GamepadReader(GamepadSuper):
         self.joystick = None
         self.isRecording = False
         self.start_time = None
-        gamepad_record = f"{self.config.get("paths.recording_folder_location")}/{self.config.get("gamepad.name")}_inputs.json"
+        gamepad_record = f"{self.config.get('paths.recording_folder_location')}/{self.config.get('gamepad.name')}_inputs.json"
         self.json_recorder = self.json_recorder = JsonRecorder(gamepad_record)
 
         self.poll_thread = None
